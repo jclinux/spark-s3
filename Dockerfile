@@ -19,8 +19,10 @@ RUN wget http://d3kbcqa49mib13.cloudfront.net/spark-2.0.0.tgz && tar xvzf spark-
 WORKDIR spark-2.0.0
 COPY pom.xml .
 RUN ./dev/make-distribution.sh --name spark-swift -Phadoop-2.7 -Pyarn -Phive -Phive-thriftserver
-WORKDIR dist
-COPY json-serde-1.3.7-jar-with-dependencies.jar ./jars/
+WORKDIR dist/jars
+RUN wget http://www.congiu.net/hive-json-serde/1.3.7/cdh5/json-serde-1.3.7-jar-with-dependencies.jar
+RUN wget http://central.maven.org/maven2/org/apache/hadoop/hadoop-aws/2.7.3/hadoop-aws-2.7.3.jar http://central.maven.org/maven2/com/amazonaws/aws-java-sdk/1.7.4/aws-java-sdk-1.7.4.jar
+WORKDIR /spark-2.0.0/dist
 
 
 #ready
