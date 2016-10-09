@@ -8,6 +8,11 @@ RUN apt-get -y update && \
     rm -rf /var/lib/apt/lists/*
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
 
+#install tini
+RUN wget https://github.com/krallin/tini/releases/download/v0.10.0/tini
+RUN chmod +x /tini
+ENTRYPOINT ["/tini", "--"]
+
 #build spark
 RUN wget http://d3kbcqa49mib13.cloudfront.net/spark-2.0.0.tgz && tar xvzf spark-2.0.0.tgz
 WORKDIR spark-2.0.0
@@ -16,13 +21,7 @@ WORKDIR dist/jars
 RUN wget http://www.congiu.net/hive-json-serde/1.3.7/cdh5/json-serde-1.3.7-jar-with-dependencies.jar
 RUN wget http://central.maven.org/maven2/org/apache/hadoop/hadoop-aws/2.7.3/hadoop-aws-2.7.3.jar http://central.maven.org/maven2/com/amazonaws/aws-java-sdk/1.7.4/aws-java-sdk-1.7.4.jar
 WORKDIR /spark-2.0.0/dist
-
-#install tini
-ENV TINI_VERSION v0.10.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-RUN chmod +x /tini
-ENTRYPOINT ["/tini", "--"]
-
+COPY spark-defaults.conf conf/
 #ready
 ENV PYSPARK_PYTHON=/usr/bin/python3
 ENV PYSPARK_PYTHON=python3
